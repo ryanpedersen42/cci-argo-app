@@ -13,7 +13,7 @@ const cciEndpoint = process.env.CCI_ENDPOINT // https://circleci.com/docs/api/v2
 const argoEndpoint = process.env.ARGO_ENDPOINT // https://argocd.circleci-demo-app.com/swagger-ui#operation/ApplicationService_Get
 const circleConfig = {
     headers: {
-        'Circle-Token': process.env.CIRCLE_TOKEN
+        'Circle-Token': process.env.CIRCLE_TOKEN // personal API token
     },
     qs: {
         branch: 'main'
