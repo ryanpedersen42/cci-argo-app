@@ -1,0 +1,12 @@
+kind: Service # set of pods and how to access them
+apiVersion: v1 # set version 
+metadata: # data to help you identify the object
+  name: cci-argo-app
+spec: # what it will create
+  type: LoadBalancer # spec.type >> provides external load balancer 
+  selector: # scans for pods that match this selector
+    app: cci-argo-app
+  ports:
+    - port: 9000 # exposes service on this port
+      targetPort: 80
+      protocol: TCP # default protocol for Services
