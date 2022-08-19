@@ -1,0 +1,40 @@
+
+kind: Rollout
+apiVersion: argoproj.io/v1alpha1
+metadata: # data to help you identify the object
+  name: cci-argo-app
+spec: # here's what the deployment is going to create
+  progressDeadlineAbort: true
+  progressDeadlineSeconds: 15
+  replicas: 5 # spec.replica >> 2 replica pods
+  strategy:
+    canary:
+      steps:
+        - setWeight: 20
+        - pause: {duration: 10}
+        - setWeight: 40
+        - pause: {duration: 10}
+        - setWeight: 60
+        - pause: {duration: 10}
+        - setWeight: 80
+        - pause: {duration: 10}
+  selector: # spec.selector >> how the deployment finds the pods to manage
+    matchLabels:
+      app: cci-argo-app # simple way to select label, whcih is defined in pod template below
+  template: # defining the pod template to be used above
+    metadata: # label the pod here
+      labels:
+        app: cci-argo-app # pods label that matchLabels above will use
+    spec: # what each pod will do
+      containers: # create a container
+        - name: deployment-demo # container named deployment-demo
+          image: ryanpedersen42/deployment-demo:canary # here's the container to use
+          imagePullPolicy: Always # [Optional // can also omit] Every time container is launched, kubelet queries registry.
+          ports:
+            - containerPort: 80 # port to expose (our image and nginx both use port 80)
+          resources: # defining the resources of the container
+            limits: # resource limits for the container
+              cpu: 500m # specifying CPU
+            requests: # what will the container request
+              cpu: 200m # define how much the container will request
+      restartPolicy: Always # This is default as well. What to do if theres an issue or crash.
